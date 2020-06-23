@@ -1,7 +1,7 @@
 use core::fmt;
 
 struct Sudoku {
-    grid: [[i32; 9]; 9],
+    grid: [[u8; 9]; 9],
 }
 
 impl fmt::Debug for Sudoku {
@@ -23,7 +23,7 @@ impl fmt::Debug for Sudoku {
 }
 
 impl Sudoku {
-    pub fn new(grid: [[i32; 9]; 9]) -> Self {
+    pub fn new(grid: [[u8; 9]; 9]) -> Self {
         Self {
             grid,
         }
@@ -39,13 +39,12 @@ impl Sudoku {
                 return false;
             }
         }
+
         let starting_x = x/3*3;
         let starting_y = y/3*3;
-        for xn in 0..3 {
-            for yn in 0..3 {
-                let check_x = xn + starting_x;
-                let check_y = yn + starting_y;
-                if check_x != x && check_y != y && self.grid[check_x][check_y] == value {
+        for xn in starting_x..starting_x+3 {
+            for yn in starting_y..starting_y+3 {
+                if xn != x && yn != y && self.grid[xn][yn] == value {
                     return false;
                 }
             }
