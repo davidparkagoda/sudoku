@@ -1,7 +1,3 @@
-#![feature(test)]
-
-extern crate test;
-
 mod sudoku;
 
 fn main() {
