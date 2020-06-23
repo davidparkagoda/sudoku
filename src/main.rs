@@ -1,4 +1,8 @@
+#![feature(test)]
+
 use core::fmt;
+
+extern crate test;
 
 struct Sudoku {
     grid: [[u8; 9]; 9],
@@ -29,7 +33,7 @@ impl Sudoku {
         }
     }
 
-    fn is_valid(&self, x: usize, y: usize) -> bool {
+    pub fn is_valid(&self, x: usize, y: usize) -> bool {
         let value = self.grid[x][y];
         for n in 0..9 {
             if n != y && self.grid[x][n] == value {
@@ -52,7 +56,7 @@ impl Sudoku {
         true
     }
 
-    fn solve(&mut self) -> bool {
+    pub fn solve(&mut self) -> bool {
         self.solve_helper(0, 0)
     }
 
@@ -78,7 +82,7 @@ impl Sudoku {
 
 
 fn main() {
-    let grid = [
+    let mut sudoku = Sudoku::new([
         [0, 4, 0, 3, 0, 9, 0, 0, 0],
         [0, 3, 8, 7, 5, 0, 0, 0, 0],
         [5, 0, 2, 0, 0, 0, 0, 0, 0],
@@ -88,8 +92,58 @@ fn main() {
         [0, 0, 0, 0, 0, 0, 8, 0, 5],
         [0, 0, 0, 0, 1, 7, 2, 4, 0],
         [0, 0, 0, 5, 0, 6, 0, 3, 0],
-    ];
-    let mut sudoku = Sudoku::new(grid);
+    ]);
     sudoku.solve();
     println!("{:?}", &sudoku);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test::Bencher;
+
+    #[test]
+    fn solve() {
+        let mut sudoku = Sudoku::new([
+            [0, 4, 0, 3, 0, 9, 0, 0, 0],
+            [0, 3, 8, 7, 5, 0, 0, 0, 0],
+            [5, 0, 2, 0, 0, 0, 0, 0, 0],
+            [6, 0, 0, 4, 0, 0, 0, 5, 0],
+            [0, 0, 1, 2, 0, 5, 3, 0, 0],
+            [0, 2, 0, 0, 0, 1, 0, 0, 9],
+            [0, 0, 0, 0, 0, 0, 8, 0, 5],
+            [0, 0, 0, 0, 1, 7, 2, 4, 0],
+            [0, 0, 0, 5, 0, 6, 0, 3, 0],
+        ]);
+        sudoku.solve();
+        assert_eq!(sudoku.grid, [
+            [1, 4, 7, 3, 6, 9, 5, 2, 8],
+            [9, 3, 8, 7, 5, 2, 6, 1, 4],
+            [5, 6, 2, 1, 8, 4, 7, 9, 3],
+            [6, 9, 3, 4, 7, 8, 1, 5, 2],
+            [4, 8, 1, 2, 9, 5, 3, 6, 7],
+            [7, 2, 5, 6, 3, 1, 4, 8, 9],
+            [2, 1, 6, 9, 4, 3, 8, 7, 5],
+            [3, 5, 9, 8, 1, 7, 2, 4, 6],
+            [8, 7, 4, 5, 2, 6, 9, 3, 1],
+        ]);
+    }
+
+    #[bench]
+    fn bench_solve(b: &mut Bencher) {
+        let mut sudoku = Sudoku::new([
+            [0, 4, 0, 3, 0, 9, 0, 0, 0],
+            [0, 3, 8, 7, 5, 0, 0, 0, 0],
+            [5, 0, 2, 0, 0, 0, 0, 0, 0],
+            [6, 0, 0, 4, 0, 0, 0, 5, 0],
+            [0, 0, 1, 2, 0, 5, 3, 0, 0],
+            [0, 2, 0, 0, 0, 1, 0, 0, 9],
+            [0, 0, 0, 0, 0, 0, 8, 0, 5],
+            [0, 0, 0, 0, 1, 7, 2, 4, 0],
+            [0, 0, 0, 5, 0, 6, 0, 3, 0],
+        ]);
+        b.iter(|| {
+            sudoku.is_valid(1, 2)
+        });
+    }
 }
