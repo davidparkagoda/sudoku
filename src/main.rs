@@ -1,4 +1,10 @@
+#![feature(test)]
+
+extern crate test;
+
 mod sudoku;
+
+use sudoku::Sudoku;
 
 fn main() {
     let mut sudoku = Sudoku::new([

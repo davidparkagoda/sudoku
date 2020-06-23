@@ -1,10 +1,6 @@
-#![feature(test)]
-
-extern crate test;
-
 use core::fmt;
 
-struct Sudoku {
+pub struct Sudoku {
     grid: [[u8; 9]; 9],
 }
 
@@ -126,7 +122,7 @@ mod tests {
             [0, 0, 0, 5, 0, 6, 0, 3, 0],
         ]);
         b.iter(|| {
-            sudoku.is_valid(1, 2)
+            sudoku.solve()
         });
     }
 }
